@@ -1,0 +1,39 @@
+# اسم سير العمل (Workflow)
+name: Deploy to GitHub Pages
+
+# تحديد متى يتم تشغيل هذا الـ Workflow
+on:
+  push:
+    branches:
+      - main  # أو اسم الفرع الذي يحتوي على كود المصدر
+
+# تعريف المهام (Jobs)
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # نوع الخادم الذي سيشغل المهمة
+    
+    steps:
+      # الخطوة 1: سحب (Checkout) الكود
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # الخطوة 2: إعداد Node.js (إذا كان مشروعك يعتمد على Node مثل React/Vue/Svelte)
+      # يمكنك حذف هذه الخطوة إذا كان مشروعك HTML/CSS/JS بسيط
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # الخطوة 3: بناء المشروع (إذا كان يتطلب ذلك)
+      # غيّري الأوامر لتناسب مشروعك (مثل npm run build)
+      - name: Build Project
+        run: |
+          npm install
+          npm run build
+          
+      # الخطوة 4: نشر المخرجات إلى GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  # غيّري هذا إلى مجلد المخرجات النهائي لمشروعك (مثل ./build أو ./public)
